@@ -1,0 +1,60 @@
+ Here's a step-by-step guide to constructing a machine learning model for SMS spam detection using the TF-IDF vectorizer and Multinomial Naive Bayes classifier in Python:
+
+Import Libraries:
+Start by importing the necessary libraries.
+
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score
+Load and Preprocess Data:
+Load the SMS spam dataset and preprocess it.
+
+# Load data
+data = pd.read_csv('/spam.csv')
+
+# Preprocess data if needed (e.g., removing punctuation, converting to lowercase)
+# Example:
+# data['text'] = data['text'].apply(lambda x: x.lower())
+Split Data into Training and Testing Sets:
+Split the dataset into training and testing sets.
+
+X_train, X_test, y_train, y_test = train_test_split(data['text'], data['label'], test_size=0.2, random_state=42)
+Feature Extraction using TF-IDF:
+Transform the text data into TF-IDF feature vectors.
+
+# Initialize TF-IDF vectorizer
+tfidf_vectorizer = TfidfVectorizer()
+
+# Fit and transform on training data
+X_train_tfidf = tfidf_vectorizer.fit_transform(X_train)
+
+# Transform testing data
+X_test_tfidf = tfidf_vectorizer.transform(X_test)
+Train Multinomial Naive Bayes Classifier:
+Train the Multinomial Naive Bayes classifier using the TF-IDF features.
+
+# Initialize Multinomial Naive Bayes classifier
+nb_classifier = MultinomialNB()
+
+# Train classifier
+nb_classifier.fit(X_train_tfidf, y_train)
+Evaluate the Model:
+Evaluate the performance of the trained model.
+
+# Predictions on the test set
+y_pred = nb_classifier.predict(X_test_tfidf)
+
+# Calculate accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy:", accuracy)
+
+Predictions:
+You can also use the trained model to make predictions on new SMS messages.
+
+new_sms = ["Congratulations! You've won a free vacation. Click here to claim your prize.",
+           "Hey, what's up?"]
+new_sms_tfidf = tfidf_vectorizer.transform(new_sms)
+predictions = nb_classifier.predict(new_sms_tfidf)
+print("Predictions:", predictions)
